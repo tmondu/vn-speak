@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViVoice Studio - Hệ thống Giọng nói AI Tiếng Việt</title>
+  <meta name="description" content="Tổng hợp giọng nói tiếng Việt Studio Neural 24kHz chuẩn phòng thu Vbee / VTV, hoàn toàn miễn phí.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="background-glow top-left"></div>
+  <div class="background-glow bottom-right"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        <span>Studio Neural 24kHz &bull; Chuẩn Vbee / VTV &bull; Miễn Phí 100%</span>
+      </div>
+      <h1 class="main-title">
+        ViVoice <span class="gradient-text">Neural Studio</span>
+      </h1>
+      <p class="subtitle">
+        Trải nghiệm giọng đọc AI tiếng Việt chất lượng phòng thu cao cấp <strong>24.0 kHz</strong>, ngắt nghỉ hơi thở tự nhiên như người thật với công nghệ Neural TTS.
+      </p>
+    </header>
+
+    <div class="main-grid">
+      <!-- Left Column: Input & Controls -->
+      <section class="card input-card">
+        <div class="card-header">
+          <h2 class="card-title">Văn bản tiếng Việt</h2>
+          <span class="char-counter" id="char-counter">0 ký tự</span>
+        </div>
+
+        <div class="textarea-wrapper">
+          <textarea 
+            id="text-input" 
+            placeholder="Nhập bất kỳ câu tiếng Việt nào (có số, ngày tháng, tiền tệ, từ viết tắt, tiếng Anh mượn)..."
+            rows="5"
+          >Hôm nay ngày 18/09/2026 tại TP.HCM, hệ thống giọng đọc AI vừa hoàn tất triển khai trên Vercel. Âm thanh đạt chất lượng phòng thu 24kHz, diễn cảm tự nhiên như phát thanh viên đài truyền hình.</textarea>
+        </div>
+
+        <!-- Quick Samples -->
+        <div class="sample-section">
+          <span class="sample-label">Mẫu văn bản thử nghiệm:</span>
+          <div class="sample-tags">
+            <button class="sample-btn" data-sample="1">📰 Bản tin thời sự</button>
+            <button class="sample-btn" data-sample="2">💰 Tài chính 150k</button>
+            <button class="sample-btn" data-sample="3">🤖 Trợ lý ảo AI</button>
+            <button class="sample-btn" data-sample="4">📖 Sách nói truyền cảm</button>
+          </div>
+        </div>
+
+        <!-- Voice & Parameter Settings -->
+        <div class="controls-grid">
+          <!-- Voice Selector -->
+          <div class="control-group">
+            <label for="voice-select" class="control-label">
+              <span>Chọn Giọng đọc</span>
+            </label>
+            <select id="voice-select" class="custom-select">
+              <option value="hoaimy" selected>🌟 Hoài My Neural (Nữ - Studio 24kHz) ⭐</option>
+              <option value="namminh">🌟 Nam Minh Neural (Nam - Studio 24kHz) ⭐</option>
+            </select>
+            <p class="control-hint" id="voice-desc">
+              Giọng nữ phát thanh viên miền Bắc, truyền cảm, ngắt nghỉ hơi thở chân thực.
+            </p>
+          </div>
+
+          <!-- Speed -->
+          <div class="control-group">
+            <div class="slider-header">
+              <label for="speed-slider" class="control-label">Tốc độ đọc</label>
+              <span class="slider-value" id="speed-val">1.0x</span>
+            </div>
+            <input type="range" id="speed-slider" min="0.75" max="1.35" step="0.05" value="1.0" class="custom-range">
+            <p class="control-hint">Tùy chỉnh tốc độ từ chậm rãi (0.75x) đến nhanh (1.35x).</p>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="generate-btn" class="primary-btn">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span id="btn-text">Đọc Ngay (Chất lượng Studio)</span>
+          <span class="btn-loader hidden" id="btn-loader"></span>
+        </button>
+      </section>
+
+      <!-- Right Column: Results & Playback -->
+      <section class="card output-card">
+        <div class="card-header">
+          <h2 class="card-title">Kết quả Giọng đọc AI</h2>
+          <span class="status-pill status-ready" id="status-pill">Sẵn sàng</span>
+        </div>
+
+        <!-- Audio Player Box -->
+        <div class="audio-player-box">
+          <div class="visualizer-container" id="visualizer">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+
+          <audio id="audio-element" controls class="native-audio"></audio>
+
+          <div class="audio-actions">
+            <a id="download-btn" class="secondary-btn disabled" download="vivoice_speech.mp3">
+              <svg class="btn-icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Tải file MP3</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-label">Thời gian tạo</span>
+            <span class="metric-value" id="metric-infer">-- ms</span>
+            <span class="metric-sub">Độ trễ xử lý</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Tần số âm thanh</span>
+            <span class="metric-value" id="metric-rate">24.0 kHz</span>
+            <span class="metric-sub">Độ phân giải Studio</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Độ tự nhiên</span>
+            <span class="metric-value" id="metric-quality" style="color: #34d399;">98%</span>
+            <span class="metric-sub">Chuẩn Studio Vbee / VTV</span>
+          </div>
+        </div>
+
+        <!-- Text Normalization Preview -->
+        <div class="normalized-box">
+          <div class="normalized-header">
+            <span class="norm-title">Văn bản sau khi chuẩn hóa (Text Normalization):</span>
+            <span class="norm-tag">Tự động</span>
+          </div>
+          <div class="normalized-content" id="norm-preview">
+            Nhấn "Đọc Ngay" để nghe giọng đọc và xem phiên âm tự động (số, ngày tháng, tiền tệ, từ viết tắt).
+          </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="comparison-note">
+          <div class="note-icon">🚀</div>
+          <div class="note-text">
+            <strong>Sẵn sàng cho Vercel:</strong> Backend chạy trên Vercel Serverless Function, sử dụng công nghệ Neural TTS với độ nén tối ưu, không tiêu tốn tài nguyên máy chủ.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>ViVoice Studio &bull; Triển khai Serverless trên <strong>Vercel</strong> &bull; Hoàn toàn Miễn Phí.</p>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
