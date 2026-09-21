@@ -11,20 +11,59 @@ import edge_tts
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from normalizer import normalize_vietnamese_text
 
+import urllib.request
+import urllib.parse
+import re
+
 VOICES = {
     "hoaimy": {
         "id": "vi-VN-HoaiMyNeural",
         "name": "🌟 Hoài My Neural (Nữ - Studio 24kHz)",
         "sample_rate": "24.0 kHz Studio",
-        "quality": "Chuẩn Studio Vbee / VTV (98%)"
+        "quality": "Chuẩn Studio Vbee / VTV (98%)",
+        "engine": "edge"
     },
     "namminh": {
         "id": "vi-VN-NamMinhNeural",
         "name": "🌟 Nam Minh Neural (Nam - Studio 24kHz)",
         "sample_rate": "24.0 kHz Studio",
-        "quality": "Trầm ấm, thời sự / sách nói (98%)"
+        "quality": "Trầm ấm, thời sự / sách nói (98%)",
+        "engine": "edge"
+    },
+    "chigoogle": {
+        "id": "chigoogle",
+        "name": "🗣️ Chị Google (Meme Quốc Dân - 24kHz)",
+        "sample_rate": "24.0 kHz",
+        "quality": "Giọng đọc kinh điển, phản hồi tức thì",
+        "engine": "google"
     }
 }
+
+def generate_google_speech_bytes(text: str) -> bytes:
+    parts = re.split(r'([.!?,\n;]+)', text)
+    chunks = []
+    curr = ""
+    for part in parts:
+        if len(curr) + len(part) < 150:
+            curr += part
+        else:
+            if curr.strip():
+                chunks.append(curr.strip())
+            curr = part
+    if curr.strip():
+        chunks.append(curr.strip())
+    
+    if not chunks:
+        chunks = [text[:150]]
+
+    audio_buffer = bytearray()
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    for c in chunks:
+        url = "https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=" + urllib.parse.quote(c)
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            audio_buffer.extend(resp.read())
+    return bytes(audio_buffer)
 
 async def generate_speech_bytes(text: str, voice_id: str, rate_str: str = None, retries: int = 3) -> bytes:
     kwargs = {}
@@ -99,9 +138,12 @@ class handler(BaseHTTPRequestHandler):
 
             # 3. Synthesize speech in memory
             start_time = time.time()
-            audio_bytes = asyncio.run(
-                generate_speech_bytes(normalized_text, selected_voice["id"], rate_str=rate_str)
-            )
+            if selected_voice.get("engine") == "google":
+                audio_bytes = generate_google_speech_bytes(normalized_text)
+            else:
+                audio_bytes = asyncio.run(
+                    generate_speech_bytes(normalized_text, selected_voice["id"], rate_str=rate_str)
+                )
             infer_duration_ms = round((time.time() - start_time) * 1000, 1)
 
             # 4. Approximate duration
