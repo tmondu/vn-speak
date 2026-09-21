@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const voiceDesc = document.getElementById('voice-desc');
   const speedSlider = document.getElementById('speed-slider');
   const speedVal = document.getElementById('speed-val');
-  const silenceSlider = document.getElementById('silence-slider');
-  const silenceVal = document.getElementById('silence-val');
   const generateBtn = document.getElementById('generate-btn');
   const btnText = document.getElementById('btn-text');
   const btnLoader = document.getElementById('btn-loader');
@@ -16,97 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const visualizer = document.getElementById('visualizer');
   
   const metricInfer = document.getElementById('metric-infer');
-  const metricRate = document.getElementById('metric-rate');
-  const metricQuality = document.getElementById('metric-quality');
-  const metricQualitySub = document.getElementById('metric-quality-sub');
   const normPreview = document.getElementById('norm-preview');
   
   const sampleBtns = document.querySelectorAll('.sample-btn');
 
   const voiceMeta = {
     hoaimy: {
-      desc: 'Giọng nữ phát thanh viên phòng thu 24kHz, ngắt nghỉ hơi thở tự nhiên như MC đài VTV (Đỉnh nhất 98%).',
-      rate: '24.0 kHz',
-      quality: '98%',
-      qualitySub: 'Chuẩn Studio Vbee'
+      desc: 'Giọng nữ phát thanh viên miền Bắc, truyền cảm, ngắt nghỉ hơi thở chân thực (Chuẩn Studio Vbee 98%).'
     },
     namminh: {
-      desc: 'Giọng nam MC truyền cảm, âm sắc ấm và chững chạc, rất phù hợp cho tin thời sự, phóng sự và sách nói (98%).',
-      rate: '24.0 kHz',
-      quality: '98%',
-      qualitySub: 'Chuẩn Studio MC'
+      desc: 'Giọng nam MC truyền cảm, âm sắc ấm và chững chạc, rất phù hợp cho tin thời sự và sách nói (Chuẩn Studio 98%).'
     },
     chigoogle: {
-      desc: 'Giọng đọc kinh điển của Google Dịch ("Chị Google"), meme quốc dân, phản hồi siêu tốc 24kHz.',
-      rate: '24.0 kHz',
-      quality: '85%',
-      qualitySub: 'Google TTS Meme'
-    },
-    vieneu_aihan: {
-      desc: 'VieNeu-TTS: Giọng Nữ miền Nam phong cách tin tức, phát âm rõ ràng, mượt mà truyền cảm.',
-      rate: '24.0 kHz',
-      quality: '95%',
-      qualitySub: 'SOTA AI Miền Nam'
-    },
-    vieneu_adam: {
-      desc: 'VieNeu-TTS: Giọng Nam miền Nam tự nhiên, ấm áp, nhịp điệu chân thực như người thật.',
-      rate: '24.0 kHz',
-      quality: '95%',
-      qualitySub: 'SOTA AI Miền Nam'
-    },
-    vieneu_myduyen: {
-      desc: 'VieNeu-TTS: Giọng Nữ miền Bắc phong cách đọc truyện, nhẹ nhàng, du dương.',
-      rate: '24.0 kHz',
-      quality: '95%',
-      qualitySub: 'SOTA AI Miền Bắc'
-    },
-    vieneu_ductri: {
-      desc: 'VieNeu-TTS: Giọng Nam miền Bắc phong cách đọc truyện, trầm ấm và cuốn hút.',
-      rate: '24.0 kHz',
-      quality: '95%',
-      qualitySub: 'SOTA AI Miền Bắc'
-    },
-    vieneu_huuquan: {
-      desc: 'VieNeu-TTS: Giọng Nam miền Bắc phong cách bản tin, dứt khoát, chuẩn thời sự.',
-      rate: '24.0 kHz',
-      quality: '95%',
-      qualitySub: 'SOTA AI Miền Bắc'
-    },
-    nu_phothong: {
-      desc: 'Mô hình Piper mới cập nhật: giọng nữ phổ thông tự nhiên hơn, chạy offline 100% trên CPU trong 150ms.',
-      rate: '22.05 kHz',
-      quality: '80%',
-      qualitySub: 'Offline CPU Tự Nhiên'
-    },
-    thanh_nien: {
-      desc: 'Mô hình Piper mới: giọng nam thanh niên tự tin, trẻ trung và dứt khoát, chạy offline siêu tốc.',
-      rate: '22.05 kHz',
-      quality: '78%',
-      qualitySub: 'Offline CPU Nam Trẻ'
-    },
-    vais1000: {
-      desc: 'Mô hình Piper VAIS-1000 nghiên cứu, âm rõ nhưng hơi đều đặn.',
-      rate: '22.05 kHz',
-      quality: '70%',
-      qualitySub: 'Offline Tiêu Chuẩn'
-    },
-    '25hours': {
-      desc: 'Mô hình Piper 25 Hours giọng đơn, 16kHz.',
-      rate: '16.0 kHz',
-      quality: '65%',
-      qualitySub: 'Offline Giọng Đơn'
-    },
-    vivos: {
-      desc: 'Mô hình Piper train từ dataset nhận dạng VIVOS: âm rè, nghẹt mũi để bạn đối chứng.',
-      rate: '16.0 kHz',
-      quality: '50%',
-      qualitySub: 'Dataset Nhận Dạng'
+      desc: 'Giọng đọc Google Dịch ("Chị Google") quen thuộc, chuẩn meme quốc dân, phản hồi siêu tốc.'
     }
   };
 
   const sampleTexts = {
     '1': 'Theo bản tin thời sự lúc 14:30 ngày 18/09/2026 tại TP.HCM, kinh tế số và trí tuệ nhân tạo tiếp tục tăng trưởng mạnh mẽ, đóng góp hơn 25.5% vào tổng sản phẩm trên địa bàn.',
-    '2': 'Dự án AI này giúp doanh nghiệp tiết kiệm 150k mỗi ngày, tương đương gần 4.5tr đồng một tháng. Toàn bộ thanh toán qua tài khoản ngân hàng diễn ra hoàn toàn tự động.',
+    '2': 'Dự án AI này giúp doanh nghiệp tiết kiệm 150k mỗi ngày, tương đương gần 4.5tr đồng một tháng. Mọi quy trình thanh toán ngân hàng đều được tự động hóa.',
     '3': 'Xin kính chào quý vị và các bạn. Tôi là trợ lý ảo trí tuệ nhân tạo thế hệ mới, rất vinh hạnh được đồng hành và hỗ trợ quý vị trong ngày hôm nay.',
     '4': 'Những năm tháng thanh xuân ấy trôi qua thật êm đềm như một cơn gió đầu hạ, để lại trong lòng chúng ta những ký ức ngọt ngào không thể nào phai nhạt.'
   };
@@ -118,24 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
   textInput.addEventListener('input', updateCharCount);
   updateCharCount();
 
-  // Voice description and quality change
-  function updateVoiceInfo() {
+  // Voice description change
+  voiceSelect.addEventListener('change', () => {
     const meta = voiceMeta[voiceSelect.value] || voiceMeta.hoaimy;
     voiceDesc.textContent = meta.desc;
-    metricRate.textContent = meta.rate;
-    metricQuality.textContent = meta.quality;
-    metricQualitySub.textContent = meta.qualitySub;
-  }
-  voiceSelect.addEventListener('change', updateVoiceInfo);
-  updateVoiceInfo();
-
-  // Slider controls
-  speedSlider.addEventListener('input', () => {
-    speedVal.textContent = `${parseFloat(speedSlider.value).toFixed(2)}x`;
   });
 
-  silenceSlider.addEventListener('input', () => {
-    silenceVal.textContent = `${parseFloat(silenceSlider.value).toFixed(2)}s`;
+  // Slider control
+  speedSlider.addEventListener('input', () => {
+    speedVal.textContent = `${parseFloat(speedSlider.value).toFixed(2)}x`;
   });
 
   // Sample buttons
@@ -185,8 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({
           text: text,
           voice: voiceSelect.value,
-          speed: parseFloat(speedSlider.value),
-          silence: parseFloat(silenceSlider.value)
+          speed: parseFloat(speedSlider.value)
         })
       });
 
@@ -197,8 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Update UI with Audio
-      const mime = data.mime_type || 'audio/wav';
-      const audioSrc = `data:${mime};base64,${data.audio_base64}`;
+      const audioSrc = `data:audio/mp3;base64,${data.audio_base64}`;
       audioElement.src = audioSrc;
       audioElement.load();
       
@@ -206,18 +121,16 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         await audioElement.play();
       } catch (err) {
-        console.log('Autoplay blocked by browser policy:', err);
+        console.log('Autoplay policy prevented auto-playback:', err);
       }
 
       // Update Download Button
-      const ext = mime.includes('mp3') ? 'mp3' : 'wav';
       downloadBtn.href = audioSrc;
-      downloadBtn.download = `ViVoice_${voiceSelect.value}_${Date.now()}.${ext}`;
+      downloadBtn.download = `ViVoice_${voiceSelect.value}_${Date.now()}.mp3`;
       downloadBtn.classList.remove('disabled');
 
       // Update Metrics
       metricInfer.textContent = `${data.infer_time_ms} ms`;
-      metricRate.textContent = data.sample_rate;
 
       // Update Normalized Preview
       normPreview.textContent = data.normalized_text;
@@ -233,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } finally {
       generateBtn.disabled = false;
       btnLoader.classList.add('hidden');
-      btnText.textContent = 'Đọc Ngay';
+      btnText.textContent = 'Đọc Ngay (Chất lượng Studio)';
     }
   });
 });
