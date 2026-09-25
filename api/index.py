@@ -16,26 +16,53 @@ import urllib.parse
 import re
 
 VOICES = {
-    "hoaimy": {
-        "id": "vi-VN-HoaiMyNeural",
-        "name": "🌟 Hoài My Neural (Nữ - Studio 24kHz)",
+    "adam_eleven": {
+        "id": "pNInz6obpgDQGcFmaJgB",
+        "name": "💎 Adam ElevenLabs (Nam - Huyền thoại Narration)",
+        "sample_rate": "44.1 kHz Ultra",
+        "quality": "Siêu thực (ElevenLabs Multilingual v2)",
+        "engine": "elevenlabs",
+        "requires_key": True
+    },
+    "andrew": {
+        "id": "en-US-AndrewMultilingualNeural",
+        "name": "🎙️ Andrew Multilingual (Nam Mỹ - Trầm ấm 24kHz)",
         "sample_rate": "24.0 kHz Studio",
-        "quality": "Chuẩn Studio Vbee / VTV (98%)",
-        "engine": "edge"
+        "quality": "Tự nhiên, phong cách Podcast / Trợ lý",
+        "engine": "edge",
+        "requires_key": False
+    },
+    "brian": {
+        "id": "en-US-BrianMultilingualNeural",
+        "name": "🎙️ Brian Multilingual (Nam Mỹ - Truyền cảm 24kHz)",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Tự nhiên, phong cách Thuyết minh / Kể chuyện",
+        "engine": "edge",
+        "requires_key": False
     },
     "namminh": {
         "id": "vi-VN-NamMinhNeural",
         "name": "🌟 Nam Minh Neural (Nam - Studio 24kHz)",
         "sample_rate": "24.0 kHz Studio",
         "quality": "Trầm ấm, thời sự / sách nói (98%)",
-        "engine": "edge"
+        "engine": "edge",
+        "requires_key": False
+    },
+    "hoaimy": {
+        "id": "vi-VN-HoaiMyNeural",
+        "name": "🌟 Hoài My Neural (Nữ - Studio 24kHz)",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Chuẩn Studio Vbee / VTV (98%)",
+        "engine": "edge",
+        "requires_key": False
     },
     "chigoogle": {
         "id": "chigoogle",
         "name": "🗣️ Chị Google (Meme Quốc Dân - 24kHz)",
         "sample_rate": "24.0 kHz",
         "quality": "Giọng đọc kinh điển, phản hồi tức thì",
-        "engine": "google"
+        "engine": "google",
+        "requires_key": False
     }
 }
 
@@ -64,6 +91,50 @@ def generate_google_speech_bytes(text: str) -> bytes:
         with urllib.request.urlopen(req, timeout=10) as resp:
             audio_buffer.extend(resp.read())
     return bytes(audio_buffer)
+
+def generate_elevenlabs_speech_bytes(text: str, voice_id: str, api_key: str = None, model_id: str = "eleven_multilingual_v2") -> bytes:
+    key = (api_key or os.environ.get("ELEVENLABS_API_KEY") or os.environ.get("ELEVEN_API_KEY") or "").strip()
+    if not key:
+        raise ValueError("Vui lòng nhập ElevenLabs API Key để sử dụng giọng Adam (hoặc cấu hình biến môi trường ELEVENLABS_API_KEY).")
+
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+    headers = {
+        "xi-api-key": key,
+        "Content-Type": "application/json",
+        "Accept": "audio/mpeg"
+    }
+    payload = {
+        "text": text,
+        "model_id": model_id,
+        "voice_settings": {
+            "stability": 0.5,
+            "similarity_boost": 0.75
+        }
+    }
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return resp.read()
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="ignore")
+        try:
+            err_json = json.loads(err_body)
+            detail = err_json.get("detail", {})
+            if isinstance(detail, dict):
+                msg = detail.get("message", err_body)
+            else:
+                msg = str(detail) or err_body
+        except Exception:
+            msg = err_body
+        if e.code == 401:
+            raise RuntimeError(f"ElevenLabs API Key không hợp lệ (HTTP 401): {msg}")
+        elif e.code == 429:
+            raise RuntimeError(f"ElevenLabs vượt hạn mức ký tự / tốc độ (HTTP 429): {msg}")
+        else:
+            raise RuntimeError(f"ElevenLabs API Error ({e.code}): {msg}")
+    except Exception as e:
+        raise RuntimeError(f"Không thể kết nối đến ElevenLabs: {str(e)}")
 
 async def generate_speech_bytes(text: str, voice_id: str, rate_str: str = None, retries: int = 3) -> bytes:
     kwargs = {}
@@ -115,6 +186,7 @@ class handler(BaseHTTPRequestHandler):
             raw_text = req_json.get("text", "").strip()
             voice_key = req_json.get("voice", "hoaimy")
             speed = float(req_json.get("speed", 1.0))
+            api_key = req_json.get("api_key", "").strip()
 
             if not raw_text:
                 self.send_response(400)
@@ -138,7 +210,13 @@ class handler(BaseHTTPRequestHandler):
 
             # 3. Synthesize speech in memory
             start_time = time.time()
-            if selected_voice.get("engine") == "google":
+            if selected_voice.get("engine") == "elevenlabs":
+                audio_bytes = generate_elevenlabs_speech_bytes(
+                    normalized_text,
+                    selected_voice["id"],
+                    api_key=api_key
+                )
+            elif selected_voice.get("engine") == "google":
                 audio_bytes = generate_google_speech_bytes(normalized_text)
             else:
                 audio_bytes = asyncio.run(
