@@ -71,6 +71,33 @@ MODELS = {
         "quality": "Chuẩn Studio Vbee / VTV (98%)",
         "requires_key": False
     },
+    "nanami": {
+        "name": "🌸 Nanami Neural (Nữ Nhật Bản - Trong trẻo 24kHz)",
+        "type": "edge",
+        "voice_id": "ja-JP-NanamiNeural",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Chuẩn Tokyo, Anime / Kể chuyện (99%)",
+        "requires_key": False,
+        "lang": "ja"
+    },
+    "keita": {
+        "name": "🎙️ Keita Neural (Nam Nhật Bản - Trầm ấm 24kHz)",
+        "type": "edge",
+        "voice_id": "ja-JP-KeitaNeural",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Chuẩn đài NHK / Thuyết minh (99%)",
+        "requires_key": False,
+        "lang": "ja"
+    },
+    "aoi": {
+        "name": "🌸 Aoi Neural (Nữ Nhật Bản - Tự nhiên 24kHz)",
+        "type": "edge",
+        "voice_id": "ja-JP-AoiNeural",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Nhẹ nhàng, giao tiếp đời thường (99%)",
+        "requires_key": False,
+        "lang": "ja"
+    },
     "adam_eleven": {
         "name": "💎 Adam ElevenLabs (Nam - Huyền thoại Narration)",
         "type": "elevenlabs",
@@ -233,8 +260,11 @@ class TTSHandler(http.server.SimpleHTTPRequestHandler):
 
                 model_entry = MODELS[voice_key]
 
-                # 1. Text normalization
-                normalized_text = normalize_vietnamese_text(raw_text)
+                # 1. Text normalization (bypass for Japanese voices to preserve Kanji/Kana/numbers)
+                if model_entry.get("lang") == "ja" or "ja-JP" in model_entry.get("voice_id", ""):
+                    normalized_text = raw_text
+                else:
+                    normalized_text = normalize_vietnamese_text(raw_text)
 
                 start_infer = time.time()
 

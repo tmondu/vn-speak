@@ -56,6 +56,33 @@ VOICES = {
         "engine": "edge",
         "requires_key": False
     },
+    "nanami": {
+        "id": "ja-JP-NanamiNeural",
+        "name": "🌸 Nanami Neural (Nữ Nhật Bản - Trong trẻo 24kHz)",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Chuẩn Tokyo, Anime / Kể chuyện (99%)",
+        "engine": "edge",
+        "requires_key": False,
+        "lang": "ja"
+    },
+    "keita": {
+        "id": "ja-JP-KeitaNeural",
+        "name": "🎙️ Keita Neural (Nam Nhật Bản - Trầm ấm 24kHz)",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Chuẩn đài NHK / Thuyết minh (99%)",
+        "engine": "edge",
+        "requires_key": False,
+        "lang": "ja"
+    },
+    "aoi": {
+        "id": "ja-JP-AoiNeural",
+        "name": "🌸 Aoi Neural (Nữ Nhật Bản - Tự nhiên 24kHz)",
+        "sample_rate": "24.0 kHz Studio",
+        "quality": "Nhẹ nhàng, giao tiếp đời thường (99%)",
+        "engine": "edge",
+        "requires_key": False,
+        "lang": "ja"
+    },
     "chigoogle": {
         "id": "chigoogle",
         "name": "🗣️ Chị Google (Meme Quốc Dân - 24kHz)",
@@ -201,8 +228,11 @@ class handler(BaseHTTPRequestHandler):
 
             selected_voice = VOICES[voice_key]
 
-            # 1. Normalize text
-            normalized_text = normalize_vietnamese_text(raw_text)
+            # 1. Normalize text (bypass for Japanese voices to preserve Kanji/Kana/numbers)
+            if selected_voice.get("lang") == "ja" or "ja-JP" in selected_voice.get("id", ""):
+                normalized_text = raw_text
+            else:
+                normalized_text = normalize_vietnamese_text(raw_text)
 
             # 2. Rate format (e.g. +10%, -15%)
             rate_pct = int((speed - 1.0) * 100)

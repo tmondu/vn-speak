@@ -11,6 +11,11 @@ Hệ thống chuyển đổi văn bản thành giọng nói tiếng Việt chấ
 - `🎙️ Andrew Multilingual (Nam Mỹ - 24kHz)`: Giọng nam phong thái tự tin, trầm ấm, phong cách podcast / đàm thoại tự nhiên.
 - `🎙️ Brian Multilingual (Nam Mỹ - 24kHz)`: Giọng nam ấm áp, truyền cảm, thích hợp kể chuyện và thuyết minh.
 
+### 🇯🇵 Giọng Tiếng Nhật Miễn Phí (Chuẩn Tokyo 99% - Edge-TTS)
+- `🌸 Nanami Neural (Nữ - 24kHz)`: Giọng nữ trong trẻo, biểu cảm ngọt ngào, chuẩn âm điệu Tokyo (Pitch accent), cực kỳ phù hợp cho video anime, review, đọc truyện, giao tiếp (Độ tự nhiên 99%).
+- `🎙️ Keita Neural (Nam - 24kHz)`: Giọng nam trầm ấm, phát âm chuẩn xác phong cách đài truyền hình NHK / thuyết minh tài liệu (Độ tự nhiên 99%).
+- `🌸 Aoi Neural (Nữ - 24kHz)`: Giọng nữ trẻ trung, đối thoại tự nhiên và giao tiếp đời thường.
+
 ### 🌟 Giọng Tiếng Việt Miễn Phí (Edge-TTS)
 - `🌟 Hoài My Neural (Nữ - 24kHz)`: Phát thanh viên miền Bắc, ngắt nghỉ hơi thở chân thực (Chuẩn Studio Vbee / VTV 98%).
 - `🌟 Nam Minh Neural (Nam - 24kHz)`: Giọng đọc MC thời sự, trầm ấm, chững chạc (Chuẩn MC bản tin / sách nói 98%).

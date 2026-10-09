@@ -62,6 +62,24 @@ document.addEventListener('DOMContentLoaded', () => {
       quality: '98% Studio Vbee',
       requiresKey: false
     },
+    nanami: {
+      desc: 'Giọng nữ tiếng Nhật đỉnh cao: ngọt ngào, trong trẻo, biểu cảm tự nhiên chuẩn giọng Tokyo (Edge-TTS Miễn phí 100%).',
+      rate: '24.0 kHz',
+      quality: '99% Chuẩn Tokyo',
+      requiresKey: false
+    },
+    keita: {
+      desc: 'Giọng nam tiếng Nhật thanh lịch, trầm ấm, chuẩn phát thanh viên đài NHK (Edge-TTS Miễn phí 100%).',
+      rate: '24.0 kHz',
+      quality: '99% Chuẩn NHK',
+      requiresKey: false
+    },
+    aoi: {
+      desc: 'Giọng nữ tiếng Nhật trẻ trung, tự nhiên, đối thoại và giao tiếp đời thường (Edge-TTS Miễn phí 100%).',
+      rate: '24.0 kHz',
+      quality: '99% Tự nhiên',
+      requiresKey: false
+    },
     adam_eleven: {
       desc: 'Giọng nam huyền thoại ElevenLabs: siêu thực, trầm ấm, truyền cảm sâu sắc (Đọc tiếng Việt & Anh đỉnh cao, cần API Key).',
       rate: '44.1 kHz',
@@ -80,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
     '1': 'Theo bản tin thời sự lúc 14:30 ngày 18/09/2026 tại TP.HCM, kinh tế số và trí tuệ nhân tạo tiếp tục tăng trưởng mạnh mẽ, đóng góp hơn 25.5% vào tổng sản phẩm trên địa bàn.',
     '2': 'Dự án AI này giúp doanh nghiệp tiết kiệm 150k mỗi ngày, tương đương gần 4.5tr đồng một tháng. Mọi quy trình thanh toán ngân hàng đều được tự động hóa.',
     '3': 'Xin kính chào quý vị và các bạn. Tôi là trợ lý ảo trí tuệ nhân tạo thế hệ mới, rất vinh hạnh được đồng hành và hỗ trợ quý vị trong ngày hôm nay.',
-    '4': 'Những năm tháng thanh xuân ấy trôi qua thật êm đềm như một cơn gió đầu hạ, để lại trong lòng chúng ta những ký ức ngọt ngào không thể nào phai nhạt.'
+    '4': 'Những năm tháng thanh xuân ấy trôi qua thật êm đềm như một cơn gió đầu hạ, để lại trong lòng chúng ta những ký ức ngọt ngào không thể nào phai nhạt.',
+    'ja': 'こんにちは！今日も一日お疲れ様でした。日本語の勉強や動画制作を一緒に頑張りましょう！'
   };
 
   // Update char counter
@@ -135,6 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
         textInput.value = sampleTexts[id];
         updateCharCount();
         textInput.focus();
+        if (id === 'ja') {
+          voiceSelect.value = 'nanami';
+          onVoiceChange();
+        }
       }
     });
   });
