@@ -89,15 +89,6 @@ MODELS = {
         "requires_key": False,
         "lang": "ja"
     },
-    "aoi": {
-        "name": "🌸 Aoi Neural (Nữ Nhật Bản - Tự nhiên 24kHz)",
-        "type": "edge",
-        "voice_id": "ja-JP-AoiNeural",
-        "sample_rate": "24.0 kHz Studio",
-        "quality": "Nhẹ nhàng, giao tiếp đời thường (99%)",
-        "requires_key": False,
-        "lang": "ja"
-    },
     "adam_eleven": {
         "name": "💎 Adam ElevenLabs (Nam - Huyền thoại Narration)",
         "type": "elevenlabs",

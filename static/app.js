@@ -74,12 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
       quality: '99% Chuẩn NHK',
       requiresKey: false
     },
-    aoi: {
-      desc: 'Giọng nữ tiếng Nhật trẻ trung, tự nhiên, đối thoại và giao tiếp đời thường (Edge-TTS Miễn phí 100%).',
-      rate: '24.0 kHz',
-      quality: '99% Tự nhiên',
-      requiresKey: false
-    },
     adam_eleven: {
       desc: 'Giọng nam huyền thoại ElevenLabs: siêu thực, trầm ấm, truyền cảm sâu sắc (Đọc tiếng Việt & Anh đỉnh cao, cần API Key).',
       rate: '44.1 kHz',

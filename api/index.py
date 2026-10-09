@@ -74,15 +74,6 @@ VOICES = {
         "requires_key": False,
         "lang": "ja"
     },
-    "aoi": {
-        "id": "ja-JP-AoiNeural",
-        "name": "🌸 Aoi Neural (Nữ Nhật Bản - Tự nhiên 24kHz)",
-        "sample_rate": "24.0 kHz Studio",
-        "quality": "Nhẹ nhàng, giao tiếp đời thường (99%)",
-        "engine": "edge",
-        "requires_key": False,
-        "lang": "ja"
-    },
     "chigoogle": {
         "id": "chigoogle",
         "name": "🗣️ Chị Google (Meme Quốc Dân - 24kHz)",
